@@ -6,23 +6,40 @@ function inputIsNull(element){
 }
 
 /**
-var customInputObj = {
-	'inputId':'#id',
-	'nullMsg':'content'
-}
-判断多个input是否为null 如果为null就返回自定义的v
+ * 自定义input对象，给multipleInputIsNull使用
 */
-function mInputIsNull(customInputObjs,callback){
-	for(var i=0;i<customInputObjs.length,i++){
-		var customInputObj = customInputObjs[i];
-		var inputElement = document.querySelector(customInputObj.inputId);
-		var nullMsg = customInputObj.nullMsg;
-		if(inputElement.value == ""){
-			
-			return nullMsg;
-		}else{
-			return true;
-		}
-		
+function cInputObj(id,nullFunc,notNullFunc) {
+	var obj = new Object();
+	obj.id = id;
+	obj.nullFunc = nullFunc;
+	obj.notNullFunc = notNullFunc;
+	obj.getInputElement = function () {
+		return document.querySelector(id);
 	}
+	return obj;
+}
+
+/**
+ * 对input的value进行为空判断 并根据封装的inputObj里的方法进行处理
+ * @param inputs
+ */
+function multipleInputIsNull(inputs) {
+	for(var i=0;i<inputs.length;i++){
+		var inputObj = inputs[i];
+		var e_input = inputObj.getInputElement();
+		if (e_input.value==""){
+			inputObj.nullFunc();
+		} else{
+			inputObj.notNullFunc();
+		}
+	}
+}
+// ui
+function toast(text){
+	//一般直接写在一个js文件中
+	layui.use(['layer', 'form'], function(){
+		var layer = layui.layer
+			,form = layui.form;
+		layer.msg(text);
+	});
 }
